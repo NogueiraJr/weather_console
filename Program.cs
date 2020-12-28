@@ -54,6 +54,16 @@ namespace weather_console
             }
         }
 
+        private static async Task<JsonDocument> StartApi(string zipInfo)
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://api.openweathermap.org");
+            var ret = await client.GetAsync($"/data/2.5/weather?zip={zipInfo}&appid=c44d8aa0c5e588db11ac6191c0bc6a60&units=metric");
+            var strRet = await ret.Content.ReadAsStringAsync();
+            var jDoc = JsonDocument.Parse(strRet);
+            return jDoc;
+        }
+
         private static async Task<string> GetWeather(String zipInfo)
         {
             try
@@ -70,24 +80,6 @@ namespace weather_console
             {
                 return ex.Message;
             }
-        }
-
-        private static async Task<JsonDocument> StartApi(string zipInfo)
-        {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("http://api.openweathermap.org");
-            var ret = await client.GetAsync($"/data/2.5/weather?zip={zipInfo}&appid=c44d8aa0c5e588db11ac6191c0bc6a60&units=metric");
-            var strRet = await ret.Content.ReadAsStringAsync();
-            var jDoc = JsonDocument.Parse(strRet);
-            return jDoc;
-        }
-
-        private static string GetTemperatureNow(JsonDocument jD)
-        {
-            jD.RootElement.GetProperty("main").GetProperty("temp").TryGetDouble(out var val);
-            var now = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-            var ret = $"Temperatura em {now} é {val}°C";
-            return ret;
         }
 
         private static RetCod GetCod(JsonDocument jD)
@@ -120,6 +112,14 @@ namespace weather_console
                 };
             }
         }
+        private static string GetTemperatureNow(JsonDocument jD)
+        {
+            jD.RootElement.GetProperty("main").GetProperty("temp").TryGetDouble(out var val);
+            var now = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+            var ret = $"Temperatura em {now} é {val}°C";
+            return ret;
+        }
+
     }
 
     class RetCod
