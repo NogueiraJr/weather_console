@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -85,7 +85,7 @@ namespace weather_console
         private static string GetTemperatureNow(JsonDocument jD)
         {
             jD.RootElement.GetProperty("main").GetProperty("temp").TryGetDouble(out var val);
-            var now = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+            var now = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
             var ret = $"Temperatura em {now} é {val}°C";
             return ret;
         }
